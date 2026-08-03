@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Bookmarklet Prova</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 20px;
+            color: #000;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        h1 {
+            font-weight: 600;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 16px;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .code-box {
+            background-color: #fff;
+            border: 2px solid #000;
+            border-radius: 16px;
+            padding: 20px;
+            margin: 20px auto;
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            text-align: left;
+            max-width: 90%;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin: 25px 0;
+        }
+
+        button {
+            background-color: #000;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 24px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        button:hover {
+            background-color: #333;
+        }
+
+        .drag-btn {
+            background-color: #fff;
+            color: #000;
+            border: 2px solid #000;
+        }
+
+        .tutorial {
+            background-color: #f7f7f7;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 30px;
+            text-align: left;
+            font-size: 15px;
+        }
+
+        .tutorial h2 {
+            font-weight: 600;
+            font-size: 18px;
+            margin-top: 0;
+        }
+
+        .tutorial ol {
+            padding-left: 20px;
+        }
+
+        .tutorial li {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Bookmarklet para Provas</h1>
+    <p>Desative proteções de segurança, copie, cole e evite detecções de troca de abas.</p>
+
+    <div class="code-box" id="codeBox">
+javascript:(function(){"use strict";const e=["blur","focus","visibilitychange","pageshow","pagehide"];e.forEach(t=>window.addEventListener(t,n=>n.stopImmediatePropagation(),!0)),document.addEventListener("keydown",t=>{(t.ctrlKey||t.metaKey)&&[67,86,90,88].includes(t.keyCode)&&t.stopImmediatePropagation()},!0),document.addEventListener("selectstart",e=>e.stopImmediatePropagation(),!0),document.addEventListener("copy",e=>e.stopImmediatePropagation(),!0),document.addEventListener("paste",e=>e.stopImmediatePropagation(),!0),document.addEventListener("cut",e=>e.stopImmediatePropagation(),!0);const t=EventTarget.prototype.removeEventListener;EventTarget.prototype.removeEventListener=function(e,n,o){if("function"==typeof n)try{t.call(this,e,n,o)}catch(e){}};alert("Script Executado, Boa Sorte!")}());
+    </div>
+
+    <div class="buttons">
+        <button onclick="copyCode()">Copiar</button>
+        <a href="javascript:(function(){'use strict';const e=['blur','focus','visibilitychange','pageshow','pagehide'];e.forEach(t=>window.addEventListener(t,n=>n.stopImmediatePropagation(),!0)),document.addEventListener('keydown',t=>{(t.ctrlKey||t.metaKey)&&[67,86,90,88].includes(t.keyCode)&&t.stopImmediatePropagation()},!0),document.addEventListener('selectstart',e=>e.stopImmediatePropagation(),!0),document.addEventListener('copy',e=>e.stopImmediatePropagation(),!0),document.addEventListener('paste',e=>e.stopImmediatePropagation(),!0),document.addEventListener('cut',e=>e.stopImmediatePropagation(),!0);const t=EventTarget.prototype.removeEventListener;EventTarget.prototype.removeEventListener=function(e,n,o){if('function'==typeof n)try{t.call(this,e,n,o)}catch(e){}};alert('Script Executado, Boa Sorte!')}());" class="drag-btn" draggable="true">Arrastar e Soltar</a>
+    </div>
+
+    <div class="tutorial">
+        <h2>Como usar:</h2>
+        <ol>
+            <li><strong>PC:</strong> Arraste o botão <strong>"Arrastar e Soltar"</strong> para a barra de favoritos do seu navegador.</li>
+            <li>Ou clique com o botão direito no botão e selecione <strong>"Adicionar a favoritos"</strong>.</li>
+            <li><strong>Mobile:</strong> Clique no botão <strong>"Copiar"</strong>, depois vá para a barra de favoritos do navegador e edite o novo favorito.</li>
+            <li>Cole o código no campo de URL do favorito.</li>
+            <li>Sempre que for fazer uma prova, clique no favorito para ativar o script.</li>
+        </ol>
+    </div>
+</div>
+
+<script>
+    function copyCode() {
+        const codeBox = document.getElementById('codeBox');
+        navigator.clipboard.writeText(codeBox.innerText).then(() => {
+            alert('Código copiado!');
+        });
+    }
+</script>
+
+</body>
+  </html>
