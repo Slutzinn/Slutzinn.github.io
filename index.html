@@ -1,137 +1,231 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <title>Bookmarklet Prova</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: #ffffff;
-            margin: 0;
-            padding: 20px;
-            color: #000;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bookmarklet</title>
+<script src="https://unpkg.com/lucide@latest"></script>
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            text-align: center;
-        }
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
+body{padding:20px}
+main{width:100%;max-width:680px;margin:auto;padding:25px 0 50px}
+.hero{text-align:center;margin-bottom:25px}
+.hero svg{width:30px;height:30px}
+h1{font-size:36px;letter-spacing:-1.5px;margin:12px 0 7px}
+p{color:#858585;font-size:14px;line-height:1.6;margin:7px 0}
+.card{background:#080808;border:1px solid #222;border-radius:20px;padding:20px;margin:15px 0;overflow:hidden}
+.title{display:flex;align-items:center;gap:9px;margin-bottom:7px}
+.title svg{width:19px;height:19px}
+.title h2{font-size:17px;margin:0}
+.sub{color:#777;font-size:13px;line-height:1.5}
 
-        h1 {
-            font-weight: 600;
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
+.dragbox{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:12px;
+width:100%;
+min-height:72px;
+margin:18px 0 12px;
+padding:16px;
+border:1px solid #333;
+border-radius:16px;
+background:#050505;
+color:#fff;
+text-decoration:none;
+cursor:grab;
+transition:.18s ease;
+overflow:hidden
+}
+.dragbox:hover{border-color:#666;background:#0b0b0b;transform:translateY(-1px)}
+.dragbox:active{cursor:grabbing;transform:scale(.98)}
+.dragleft{display:flex;align-items:center;gap:13px;min-width:0}
+.dragicon{width:42px;height:42px;min-width:42px;border:1px solid #292929;border-radius:12px;display:grid;place-items:center;background:#0b0b0b}
+.dragicon svg{width:20px;height:20px}
+.dragtext{min-width:0}
+.dragtext b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dragtext span{display:block;color:#666;font-size:12px;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dragright{color:#777;flex-shrink:0}
+.dragright svg{width:19px}
 
-        p {
-            font-size: 16px;
-            color: #333;
-            line-height: 1.5;
-        }
+.copy{
+width:100%;
+height:48px;
+border:1px solid #292929;
+border-radius:13px;
+background:#101010;
+color:#fff;
+font-weight:600;
+cursor:pointer;
+transition:.15s
+}
+.copy:hover{background:#171717;border-color:#444}
+.copy:active{transform:scale(.97)}
 
-        .code-box {
-            background-color: #fff;
-            border: 2px solid #000;
-            border-radius: 16px;
-            padding: 20px;
-            margin: 20px auto;
-            word-break: break-all;
-            font-family: monospace;
-            font-size: 14px;
-            overflow-x: auto;
-            text-align: left;
-            max-width: 90%;
-        }
+.steps{margin-top:10px}
+.step{display:flex;gap:12px;padding:13px 0;border-bottom:1px solid #181818}
+.step:last-child{border:0}
+.num{width:29px;height:29px;min-width:29px;border:1px solid #333;border-radius:9px;display:grid;place-items:center;font-size:12px}
+.step p{margin:0}
+kbd{border:1px solid #333;background:#111;border-radius:6px;padding:3px 6px;color:#ccc;font-size:11px}
 
-        .buttons {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-            margin: 25px 0;
-        }
+.note{margin-top:15px;padding:13px;border:1px solid #222;border-radius:12px;background:#050505;color:#777;font-size:12px;line-height:1.5}
 
-        button {
-            background-color: #000;
-            color: #fff;
-            border: none;
-            border-radius: 10px;
-            padding: 12px 24px;
-            font-size: 16px;
-            cursor: pointer;
-            font-weight: 500;
-        }
+.toast{
+position:fixed;
+left:50%;
+bottom:22px;
+transform:translate(-50%,20px);
+background:#111;
+border:1px solid #333;
+border-radius:12px;
+padding:11px 16px;
+font-size:13px;
+opacity:0;
+pointer-events:none;
+transition:.2s;
+white-space:nowrap;
+z-index:10
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
 
-        button:hover {
-            background-color: #333;
-        }
-
-        .drag-btn {
-            background-color: #fff;
-            color: #000;
-            border: 2px solid #000;
-        }
-
-        .tutorial {
-            background-color: #f7f7f7;
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 30px;
-            text-align: left;
-            font-size: 15px;
-        }
-
-        .tutorial h2 {
-            font-weight: 600;
-            font-size: 18px;
-            margin-top: 0;
-        }
-
-        .tutorial ol {
-            padding-left: 20px;
-        }
-
-        .tutorial li {
-            margin-bottom: 10px;
-        }
-    </style>
+@media(max-width:480px){
+body{padding:10px}
+main{padding-top:15px}
+.card{padding:16px;border-radius:17px}
+h1{font-size:32px}
+.dragbox{min-height:68px;padding:13px}
+.dragicon{width:38px;height:38px;min-width:38px}
+.dragright{display:none}
+}
+</style>
 </head>
+
 <body>
+<main>
 
-<div class="container">
-    <h1>Bookmarklet para Provas</h1>
-    <p>Desative proteções de segurança, copie, cole e evite detecções de troca de abas.</p>
+<section class="hero">
+<i data-lucide="bookmark"></i>
+<h1>Bookmarklet</h1>
+<div class="sub">Arraste ou copie para adicionar aos favoritos.</div>
+</section>
 
-    <div class="code-box" id="codeBox">
-javascript:(function(){"use strict";const e=["blur","focus","visibilitychange","pageshow","pagehide"];e.forEach(t=>window.addEventListener(t,n=>n.stopImmediatePropagation(),!0)),document.addEventListener("keydown",t=>{(t.ctrlKey||t.metaKey)&&[67,86,90,88].includes(t.keyCode)&&t.stopImmediatePropagation()},!0),document.addEventListener("selectstart",e=>e.stopImmediatePropagation(),!0),document.addEventListener("copy",e=>e.stopImmediatePropagation(),!0),document.addEventListener("paste",e=>e.stopImmediatePropagation(),!0),document.addEventListener("cut",e=>e.stopImmediatePropagation(),!0);const t=EventTarget.prototype.removeEventListener;EventTarget.prototype.removeEventListener=function(e,n,o){if("function"==typeof n)try{t.call(this,e,n,o)}catch(e){}};alert("Script Executado, Boa Sorte!")}());
-    </div>
+<section class="card">
 
-    <div class="buttons">
-        <button onclick="copyCode()">Copiar</button>
-        <a href="javascript:(function(){'use strict';const e=['blur','focus','visibilitychange','pageshow','pagehide'];e.forEach(t=>window.addEventListener(t,n=>n.stopImmediatePropagation(),!0)),document.addEventListener('keydown',t=>{(t.ctrlKey||t.metaKey)&&[67,86,90,88].includes(t.keyCode)&&t.stopImmediatePropagation()},!0),document.addEventListener('selectstart',e=>e.stopImmediatePropagation(),!0),document.addEventListener('copy',e=>e.stopImmediatePropagation(),!0),document.addEventListener('paste',e=>e.stopImmediatePropagation(),!0),document.addEventListener('cut',e=>e.stopImmediatePropagation(),!0);const t=EventTarget.prototype.removeEventListener;EventTarget.prototype.removeEventListener=function(e,n,o){if('function'==typeof n)try{t.call(this,e,n,o)}catch(e){}};alert('Script Executado, Boa Sorte!')}());" class="drag-btn" draggable="true">Arrastar e Soltar</a>
-    </div>
-
-    <div class="tutorial">
-        <h2>Como usar:</h2>
-        <ol>
-            <li><strong>PC:</strong> Arraste o botão <strong>"Arrastar e Soltar"</strong> para a barra de favoritos do seu navegador.</li>
-            <li>Ou clique com o botão direito no botão e selecione <strong>"Adicionar a favoritos"</strong>.</li>
-            <li><strong>Mobile:</strong> Clique no botão <strong>"Copiar"</strong>, depois vá para a barra de favoritos do navegador e edite o novo favorito.</li>
-            <li>Cole o código no campo de URL do favorito.</li>
-            <li>Sempre que for fazer uma prova, clique no favorito para ativar o script.</li>
-        </ol>
-    </div>
+<div class="title">
+<i data-lucide="move"></i>
+<h2>Arrastar para favoritos</h2>
 </div>
 
+<p class="sub">
+No computador, arraste esta caixa diretamente para a barra de favoritos.
+</p>
+
+<a id="bookmarklet" class="dragbox" draggable="true">
+<div class="dragleft">
+<div class="dragicon">
+<i data-lucide="zap"></i>
+</div>
+
+<div class="dragtext">
+<b>Meu Bookmarklet</b>
+<span>Arraste esta caixa para a barra de favoritos</span>
+</div>
+</div>
+
+<div class="dragright">
+<i data-lucide="grip-vertical"></i>
+</div>
+</a>
+
+<button class="copy" onclick="copiar()">
+<i data-lucide="copy"></i>
+&nbsp; Copiar código
+</button>
+
+<div class="note">
+Depois de salvar, clique no favorito para executar o bookmarklet.
+</div>
+
+</section>
+
+<section class="card">
+
+<div class="title">
+<i data-lucide="list-ordered"></i>
+<h2>Como configurar</h2>
+</div>
+
+<div class="steps">
+
+<div class="step">
+<div class="num">1</div>
+<p>Ative a barra de favoritos com <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>B</kbd>.</p>
+</div>
+
+<div class="step">
+<div class="num">2</div>
+<p>Crie um novo favorito na barra.</p>
+</div>
+
+<div class="step">
+<div class="num">3</div>
+<p>Nomeie como <b>Meu Bookmarklet</b>.</p>
+</div>
+
+<div class="step">
+<div class="num">4</div>
+<p>Apague a URL existente e cole o código copiado.</p>
+</div>
+
+<div class="step">
+<div class="num">5</div>
+<p>Salve o favorito.</p>
+</div>
+
+<div class="step">
+<div class="num">6</div>
+<p>Abra a página desejada e clique no favorito.</p>
+</div>
+
+</div>
+</section>
+
+</main>
+
+<div id="toast" class="toast">Código copiado</div>
+
 <script>
-    function copyCode() {
-        const codeBox = document.getElementById('codeBox');
-        navigator.clipboard.writeText(codeBox.innerText).then(() => {
-            alert('Código copiado!');
-        });
-    }
+const code=`javascript:(function(){const darkId='custom-dark-mode-style';const existing=document.getElementById(darkId);if(existing){existing.remove();const box=document.getElementById('gemini-float-box');if(box)box.remove();return;}const style=document.createElement('style');style.id=darkId;style.innerHTML=\`html { filter: invert(0.92) hue-rotate(180deg) !important; background-color: #121212 !important; } img, svg:not(#gemini-float-box *), canvas, video, [style*="background-image"] { filter: invert(1) hue-rotate(180deg) !important; } #gemini-float-box { filter: invert(0) !important; }\`;document.head.appendChild(style);const unlock=function(e){return e.stopImmediatePropagation(),!0};document.addEventListener("copy",unlock,!0);document.addEventListener("cut",unlock,!0);document.addEventListener("paste",unlock,!0);if(document.getElementById('gemini-float-box'))return;const box=document.createElement('div');box.id='gemini-float-box';box.style.cssText='position:fixed;top:100px;left:100px;width:60px;height:60px;background:#121212;border-radius:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,0.5);z-index:999999;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;touch-action:none;outline:none;';box.innerHTML='<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#e0e0e0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 0 1 7.5 16.5"/><path d="M12 12v10"/><path d="M12 12H2.5"/></svg>';document.body.appendChild(box);let isDragging=!1,startX,startY,initialX,initialY,hasMoved=!1;const startMove=(e,t)=>{isDragging=!0;hasMoved=!1;startX=e;startY=t;initialX=box.offsetLeft;initialY=box.offsetTop};const moveElement=(e,t)=>{if(!isDragging)return;const n=e-startX,o=t-startY;(Math.abs(n)>3||Math.abs(o)>3)&&(hasMoved=!0);box.style.left=\`\${initialX+n}px\`;box.style.top=\`\${initialY+o}px\`};const endMove=()=>{isDragging=!1};box.addEventListener('mousedown',e=>{startMove(e.clientX,e.clientY);e.preventDefault()});document.addEventListener('mousemove',e=>moveElement(e.clientX,e.clientY));document.addEventListener('mouseup',endMove);box.addEventListener('touchstart',e=>{if(1===e.touches.length)startMove(e.touches[0].clientX,e.touches[0].clientY)},{passive:!0});document.addEventListener('touchmove',e=>{if(1===e.touches.length)moveElement(e.touches[0].clientX,e.touches[0].clientY)},{passive:!0});document.addEventListener('touchend',endMove);box.addEventListener('click',()=>{if(!hasMoved)window.open('https://www.google.com.br/search?udm=50','_blank')})})();`;
+
+const bm=document.getElementById("bookmarklet");
+bm.href=code;
+
+async function copiar(){
+try{
+await navigator.clipboard.writeText(code);
+}catch{
+const x=document.createElement("textarea");
+x.value=code;
+document.body.appendChild(x);
+x.select();
+document.execCommand("copy");
+x.remove();
+}
+const t=document.getElementById("toast");
+t.classList.add("show");
+setTimeout(()=>t.classList.remove("show"),1800);
+}
+
+bm.addEventListener("dragstart",e=>{
+e.dataTransfer.setData("text/uri-list",code);
+e.dataTransfer.setData("text/plain",code);
+});
+
+lucide.createIcons();
 </script>
 
 </body>
-  </html>
+</html>
