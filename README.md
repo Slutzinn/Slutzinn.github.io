@@ -42,7 +42,7 @@ Tecnologias
 
 Autor
 
-Nunesxyz
+Slutzinn
 
 Licença
 
