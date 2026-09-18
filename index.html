@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Bookmarklet</title>
+<title>Bookmarklets</title>
 <script src="https://unpkg.com/lucide@latest"></script>
 
 <style>
@@ -108,29 +108,29 @@ h1{font-size:32px}
 
 <section class="hero">
 <i data-lucide="bookmark"></i>
-<h1>Bookmarklet</h1>
+<h1>Bookmarklets</h1>
 <div class="sub">Arraste ou copie para adicionar aos favoritos.</div>
 </section>
 
+<!-- Bookmarklet Original -->
 <section class="card">
-
 <div class="title">
 <i data-lucide="move"></i>
-<h2>Arrastar para favoritos</h2>
+<h2>Meu Bookmarklet</h2>
 </div>
 
 <p class="sub">
 No computador, arraste esta caixa diretamente para a barra de favoritos.
 </p>
 
-<a id="bookmarklet" class="dragbox" draggable="true">
+<a id="bookmarklet1" class="dragbox" draggable="true">
 <div class="dragleft">
 <div class="dragicon">
 <i data-lucide="zap"></i>
 </div>
 
 <div class="dragtext">
-<b>Meu Bookmarklet</b>
+<b>Modo IA</b>
 <span>Arraste esta caixa para a barra de favoritos</span>
 </div>
 </div>
@@ -140,7 +140,7 @@ No computador, arraste esta caixa diretamente para a barra de favoritos.
 </div>
 </a>
 
-<button class="copy" onclick="copiar()">
+<button class="copy" onclick="copiar(code1)">
 <i data-lucide="copy"></i>
 &nbsp; Copiar código
 </button>
@@ -148,18 +148,53 @@ No computador, arraste esta caixa diretamente para a barra de favoritos.
 <div class="note">
 Depois de salvar, clique no favorito para executar o bookmarklet.
 </div>
+</section>
 
+<!-- Novo Bookmarklet: Aluraware -->
+<section class="card">
+<div class="title">
+<i data-lucide="shield-off"></i>
+<h2>Aluraware</h2>
+</div>
+
+<p class="sub">
+Desbloqueia seleções, menus de contexto e rastreamento de visibilidade da página.
+</p>
+
+<a id="bookmarklet2" class="dragbox" draggable="true">
+<div class="dragleft">
+<div class="dragicon">
+<i data-lucide="unlock"></i>
+</div>
+
+<div class="dragtext">
+<b>Aluraware</b>
+<span>Arraste esta caixa para a barra de favoritos</span>
+</div>
+</div>
+
+<div class="dragright">
+<i data-lucide="grip-vertical"></i>
+</div>
+</a>
+
+<button class="copy" onclick="copiar(code2)">
+<i data-lucide="copy"></i>
+&nbsp; Copiar código
+</button>
+
+<div class="note">
+Depois de salvar, clique no favorito para executar o bookmarklet.
+</div>
 </section>
 
 <section class="card">
-
 <div class="title">
 <i data-lucide="list-ordered"></i>
 <h2>Como configurar</h2>
 </div>
 
 <div class="steps">
-
 <div class="step">
 <div class="num">1</div>
 <p>Ative a barra de favoritos com <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>B</kbd>.</p>
@@ -172,7 +207,7 @@ Depois de salvar, clique no favorito para executar o bookmarklet.
 
 <div class="step">
 <div class="num">3</div>
-<p>Nomeie como <b>Meu Bookmarklet</b>.</p>
+<p>Nomeie como desejar (ex: <b>Aluraware</b>).</p>
 </div>
 
 <div class="step">
@@ -189,7 +224,6 @@ Depois de salvar, clique no favorito para executar o bookmarklet.
 <div class="num">6</div>
 <p>Abra a página desejada e clique no favorito.</p>
 </div>
-
 </div>
 </section>
 
@@ -198,17 +232,32 @@ Depois de salvar, clique no favorito para executar o bookmarklet.
 <div id="toast" class="toast">Código copiado</div>
 
 <script>
-const code=`javascript:(function(){const darkId='custom-dark-mode-style';const existing=document.getElementById(darkId);if(existing){existing.remove();const box=document.getElementById('gemini-float-box');if(box)box.remove();return;}const style=document.createElement('style');style.id=darkId;style.innerHTML=\`html { filter: invert(0.92) hue-rotate(180deg) !important; background-color: #121212 !important; } img, svg:not(#gemini-float-box *), canvas, video, [style*="background-image"] { filter: invert(1) hue-rotate(180deg) !important; } #gemini-float-box { filter: invert(0) !important; }\`;document.head.appendChild(style);const unlock=function(e){return e.stopImmediatePropagation(),!0};document.addEventListener("copy",unlock,!0);document.addEventListener("cut",unlock,!0);document.addEventListener("paste",unlock,!0);if(document.getElementById('gemini-float-box'))return;const box=document.createElement('div');box.id='gemini-float-box';box.style.cssText='position:fixed;top:100px;left:100px;width:60px;height:60px;background:#121212;border-radius:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,0.5);z-index:999999;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;touch-action:none;outline:none;';box.innerHTML='<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#e0e0e0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 0 1 7.5 16.5"/><path d="M12 12v10"/><path d="M12 12H2.5"/></svg>';document.body.appendChild(box);let isDragging=!1,startX,startY,initialX,initialY,hasMoved=!1;const startMove=(e,t)=>{isDragging=!0;hasMoved=!1;startX=e;startY=t;initialX=box.offsetLeft;initialY=box.offsetTop};const moveElement=(e,t)=>{if(!isDragging)return;const n=e-startX,o=t-startY;(Math.abs(n)>3||Math.abs(o)>3)&&(hasMoved=!0);box.style.left=\`\${initialX+n}px\`;box.style.top=\`\${initialY+o}px\`};const endMove=()=>{isDragging=!1};box.addEventListener('mousedown',e=>{startMove(e.clientX,e.clientY);e.preventDefault()});document.addEventListener('mousemove',e=>moveElement(e.clientX,e.clientY));document.addEventListener('mouseup',endMove);box.addEventListener('touchstart',e=>{if(1===e.touches.length)startMove(e.touches[0].clientX,e.touches[0].clientY)},{passive:!0});document.addEventListener('touchmove',e=>{if(1===e.touches.length)moveElement(e.touches[0].clientX,e.touches[0].clientY)},{passive:!0});document.addEventListener('touchend',endMove);box.addEventListener('click',()=>{if(!hasMoved)window.open('https://www.google.com.br/search?udm=50','_blank')})})();`;
+const code1=`javascript:(function(){const darkId='custom-dark-mode-style';const existing=document.getElementById(darkId);if(existing){existing.remove();const box=document.getElementById('gemini-float-box');if(box)box.remove();return;}const style=document.createElement('style');style.id=darkId;style.innerHTML=\`html { filter: invert(0.92) hue-rotate(180deg) !important; background-color: #121212 !important; } img, svg:not(#gemini-float-box *), canvas, video, [style*="background-image"] { filter: invert(1) hue-rotate(180deg) !important; } #gemini-float-box { filter: invert(0) !important; }\`;document.head.appendChild(style);const unlock=function(e){return e.stopImmediatePropagation(),!0};document.addEventListener("copy",unlock,!0);document.addEventListener("cut",unlock,!0);document.addEventListener("paste",unlock,!0);if(document.getElementById('gemini-float-box'))return;const box=document.createElement('div');box.id='gemini-float-box';box.style.cssText='position:fixed;top:100px;left:100px;width:60px;height:60px;background:#121212;border-radius:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,0.5);z-index:999999;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;touch-action:none;outline:none;';box.innerHTML='<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#e0e0e0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 0 1 7.5 16.5"/><path d="M12 12v10"/><path d="M12 12H2.5"/></svg>';document.body.appendChild(box);let isDragging=!1,startX,startY,initialX,initialY,hasMoved=!1;const startMove=(e,t)=>{isDragging=!0;hasMoved=!1;startX=e;startY=t;initialX=box.offsetLeft;initialY=box.offsetTop};const moveElement=(e,t)=>{if(!isDragging)return;const n=e-startX,o=t-startY;(Math.abs(n)>3||Math.abs(o)>3)&&(hasMoved=!0);box.style.left=\`\${initialX+n}px\`;box.style.top=\`\${initialY+o}px\`};const endMove=()=>{isDragging=!1};box.addEventListener('mousedown',e=>{startMove(e.clientX,e.clientY);e.preventDefault()});document.addEventListener('mousemove',e=>moveElement(e.clientX,e.clientY));document.addEventListener('mouseup',endMove);box.addEventListener('touchstart',e=>{if(1===e.touches.length)startMove(e.touches[0].clientX,e.touches[0].clientY)},{passive:!0});document.addEventListener('touchmove',e=>{if(1===e.touches.length)moveElement(e.touches[0].clientX,e.touches[0].clientY)},{passive:!0});document.addEventListener('touchend',endMove);box.addEventListener('click',()=>{if(!hasMoved)window.open('https://www.google.com.br/search?udm=50','_blank')})})();`;
 
-const bm=document.getElementById("bookmarklet");
-bm.href=code;
+const code2=`javascript:(function(){const e=["copy","cut","paste","selectstart","contextmenu","dragstart","mousedown","mouseup","keydown","keyup"],t=e=>{e.stopImmediatePropagation();return!0};e.forEach(e=>{document.addEventListener(e,t,!0),document.body&&document.body.addEventListener(e,t,!0)});const o=document.createElement("style");o.innerHTML="* { -webkit-user-select: text !important; -moz-user-select: text !important; -ms-user-select: text !important; user-select: text !important; }",document.head.appendChild(o),Object.defineProperty(document,"visibilityState",{value:"visible",writable:!1}),Object.defineProperty(document,"hidden",{value:!1,writable:!1});const n=["blur","visibilitychange","mouseleave","mouseout","pointerleave","pointerout","dragleave"],r=e=>{"mouseleave"===e.type||"mouseout"===e.type||"pointerleave"===e.type?e.relatedTarget&&"HTML"!==e.relatedTarget.nodeName||(e.stopImmediatePropagation(),e.preventDefault()):(e.stopImmediatePropagation(),e.preventDefault())};n.forEach(e=>{document.addEventListener(e,r,!0),window.addEventListener(e,r,!0)}),document.hasFocus=function(){return!0},alert("Segurança? Que segurança?");})();`;
 
-async function copiar(){
+// Configurações do Bookmarklet 1
+const bm1=document.getElementById("bookmarklet1");
+bm1.href=code1;
+bm1.addEventListener("dragstart",e=>{
+e.dataTransfer.setData("text/uri-list",code1);
+e.dataTransfer.setData("text/plain",code1);
+});
+
+// Configurações do Bookmarklet 2 (Aluraware)
+const bm2=document.getElementById("bookmarklet2");
+bm2.href=code2;
+bm2.addEventListener("dragstart",e=>{
+e.dataTransfer.setData("text/uri-list",code2);
+e.dataTransfer.setData("text/plain",code2);
+});
+
+async function copiar(codigo){
 try{
-await navigator.clipboard.writeText(code);
+await navigator.clipboard.writeText(codigo);
 }catch{
 const x=document.createElement("textarea");
-x.value=code;
+x.value=codigo;
 document.body.appendChild(x);
 x.select();
 document.execCommand("copy");
@@ -218,11 +267,6 @@ const t=document.getElementById("toast");
 t.classList.add("show");
 setTimeout(()=>t.classList.remove("show"),1800);
 }
-
-bm.addEventListener("dragstart",e=>{
-e.dataTransfer.setData("text/uri-list",code);
-e.dataTransfer.setData("text/plain",code);
-});
 
 lucide.createIcons();
 </script>
