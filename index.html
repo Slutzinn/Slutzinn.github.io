@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Links dos Trabalhos</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Google Fonts: Space Grotesk & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#09090b',
+                        cardBg: '#121215',
+                        cardBorder: 'rgba(255, 255, 255, 0.15)',
+                        cardBorderHover: 'rgba(255, 255, 255, 0.35)',
+                        brand: '#6366f1',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Space Grotesk', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Tipografia Global */
+        body {
+            background-color: #09090b;
+            color: #f4f4f5;
+            font-family: 'Inter', sans-serif;
+        }
+
+        h1, h2, h3, .font-heading {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        /* Estilização das Bordas Brancas e Cantos Arredondados */
+        .glass-card {
+            background-color: #121215;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            transition: all 0.25s ease-in-out;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(255, 255, 255, 0.35);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7);
+        }
+
+        .glass-input {
+            background-color: #0c0c0e;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 14px;
+            color: #f4f4f5;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .glass-input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.45);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Scrollbar customizada */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #09090b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #27272a;
+            border-radius: 9999px;
+            border: 2px solid #09090b;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3f3f46;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between antialiased selection:bg-white/20 selection:text-white">
+
+    <!-- Conteúdo Principal -->
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full flex-grow">
+        
+        <!-- Header -->
+        <header class="flex items-center justify-between gap-4 mb-8">
+            <!-- Pesquisa e Estatísticas -->
+            <div class="relative w-full">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-zinc-400">
+                    <i data-lucide="search" class="w-5 h-5"></i>
+                </div>
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    oninput="filterProjects()" 
+                    placeholder="Buscar por título, categoria ou URL..." 
+                    class="w-full pl-11 pr-4 py-3.5 glass-input text-sm placeholder-zinc-500"
+                >
+            </div>
+
+            <!-- Ações Principais -->
+            <div class="flex items-center gap-3 shrink-0">
+                <button onclick="restoreDefaults()" title="Restaurar projetos padrão" class="p-3 rounded-2xl border border-white/15 bg-white/5 hover:bg-white/10 text-zinc-300 hover:text-white transition duration-200 flex items-center justify-center">
+                    <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
+                </button>
+                
+                <button onclick="openModal()" class="inline-flex items-center justify-center gap-2.5 bg-white text-black font-semibold px-5 py-3 rounded-2xl transition duration-200 hover:bg-zinc-200 active:scale-95 shadow-lg shadow-white/5">
+                    <i data-lucide="plus" class="w-5 h-5"></i>
+                    <span class="text-sm font-heading tracking-wide hidden sm:inline">Novo Trabalho</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Notification Toast -->
+        <div id="toast" class="fixed bottom-6 right-6 bg-zinc-900 border border-white/20 text-white px-5 py-4 rounded-2xl shadow-2xl flex items-center gap-3 opacity-0 pointer-events-none transition-all duration-300 z-50 transform translate-y-3">
+            <div class="p-1 rounded-lg bg-emerald-500/20 text-emerald-400">
+                <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+            </div>
+            <span id="toastMsg" class="text-sm font-medium">Link copiado com sucesso!</span>
+        </div>
+
+        <!-- Grid de Cards de Projetos -->
+        <div id="projectsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <!-- Renderizado via JavaScript -->
+        </div>
+
+        <!-- Estado Vazio -->
+        <div id="emptyState" class="hidden text-center py-20 glass-card border-dashed">
+            <div class="w-16 h-16 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4 text-zinc-400">
+                <i data-lucide="folder-open" class="w-8 h-8"></i>
+            </div>
+            <h3 class="text-lg font-heading font-semibold text-white mb-1">Nenhum trabalho encontrado</h3>
+            <p class="text-zinc-400 text-sm max-w-sm mx-auto">Não encontramos nenhum projeto com este termo ou você ainda não cadastrou nada.</p>
+        </div>
+
+    </div>
+
+    <!-- Modal Adicionar Novo Projeto -->
+    <div id="modal" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-50 opacity-0 pointer-events-none transition-opacity duration-200">
+        <div class="bg-[#121215] border border-white/20 w-full max-w-lg rounded-3xl p-6 sm:p-8 shadow-2xl transform scale-95 transition-transform duration-200" id="modalContent">
+            
+            <div class="flex justify-between items-center mb-6">
+                <div class="flex items-center gap-3">
+                    <div class="p-2 rounded-xl bg-white/10 text-white">
+                        <i data-lucide="link-2" class="w-5 h-5"></i>
+                    </div>
+                    <h2 class="text-xl font-heading font-bold text-white">Adicionar Trabalho</h2>
+                </div>
+                <button onclick="closeModal()" class="text-zinc-400 hover:text-white p-2 rounded-xl hover:bg-white/5 transition">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <form id="projectForm" onsubmit="saveProject(event)">
+                
+                <div class="space-y-4 mb-8">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">Título do Trabalho *</label>
+                        <input 
+                            type="text" 
+                            id="projectTitle" 
+                            required 
+                            placeholder="Ex: Urano | By Nunesxyz" 
+                            class="w-full px-4 py-3 glass-input text-sm placeholder-zinc-600"
+                        >
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">URL / Link *</label>
+                        <input 
+                            type="url" 
+                            id="projectUrl" 
+                            required 
+                            placeholder="https://canva.link/..." 
+                            class="w-full px-4 py-3 glass-input text-sm placeholder-zinc-600"
+                        >
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">Categoria (Opcional)</label>
+                        <input 
+                            type="text" 
+                            id="projectCategory" 
+                            placeholder="Ex: Canva, Design, Apresentação" 
+                            class="w-full px-4 py-3 glass-input text-sm placeholder-zinc-600"
+                        >
+                    </div>
+                </div>
+
+                <div class="flex gap-3 justify-end">
+                    <button 
+                        type="button" 
+                        onclick="closeModal()" 
+                        class="px-5 py-3 border border-white/10 hover:bg-white/5 text-zinc-300 font-medium rounded-2xl text-sm transition">
+                        Cancelar
+                    </button>
+                    <button 
+                        type="submit" 
+                        class="px-6 py-3 bg-white hover:bg-zinc-200 text-black font-semibold rounded-2xl text-sm transition flex items-center gap-2">
+                        <i data-lucide="check" class="w-4 h-4"></i>
+                        <span>Salvar Link</span>
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <!-- Script Principal -->
+    <script>
+        // Projetos Iniciais Obrigatórios
+        const defaultProjects = [
+            {
+                id: '1',
+                title: 'Marte',
+                url: 'https://canva.link/sne7dlpka73aycw',
+                category: 'Canva'
+            },
+            {
+                id: '2',
+                title: 'Urano | By Nunesxyz',
+                url: 'https://canva.link/s3j5jdnyqqfn6t1',
+                category: 'Canva'
+            }
+        ];
+
+        // Obter projetos armazenados ou padrão
+        function getProjects() {
+            const saved = localStorage.getItem('hub_trabalhos_links');
+            if (saved) {
+                try {
+                    return JSON.parse(saved);
+                } catch (e) {
+                    console.error("Erro ao ler LocalStorage:", e);
+                }
+            }
+            localStorage.setItem('hub_trabalhos_links', JSON.stringify(defaultProjects));
+            return defaultProjects;
+        }
+
+        // Salvar array no localStorage
+        function setProjects(projects) {
+            localStorage.setItem('hub_trabalhos_links', JSON.stringify(projects));
+        }
+
+        // Renderizar a lista de cards
+        function renderProjects(filterText = '') {
+            const grid = document.getElementById('projectsGrid');
+            const emptyState = document.getElementById('emptyState');
+            const projects = getProjects();
+
+            const query = filterText.toLowerCase().trim();
+
+            const filtered = projects.filter(p => 
+                p.title.toLowerCase().includes(query) ||
+                p.url.toLowerCase().includes(query) ||
+                (p.category && p.category.toLowerCase().includes(query))
+            );
+
+            grid.innerHTML = '';
+
+            if (filtered.length === 0) {
+                emptyState.classList.remove('hidden');
+                lucide.createIcons();
+                return;
+            } else {
+                emptyState.classList.add('hidden');
+            }
+
+            filtered.forEach(project => {
+                const card = document.createElement('div');
+                card.className = 'glass-card p-6 flex flex-col justify-between group';
+
+                const categoryBadge = project.category ? `
+                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-medium bg-white/10 text-zinc-300 border border-white/10">
+                        <i data-lucide="tag" class="w-3 h-3"></i>
+                        ${escapeHtml(project.category)}
+                    </span>
+                ` : '';
+
+                card.innerHTML = `
+                    <div>
+                        <!-- Topo do Card -->
+                        <div class="flex items-start justify-between gap-4 mb-3">
+                            <div class="flex items-center gap-3">
+                                <div class="w-11 h-11 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center text-white shrink-0 group-hover:border-white/40 transition">
+                                    <i data-lucide="external-link" class="w-5 h-5"></i>
+                                </div>
+                                <div class="overflow-hidden">
+                                    <h3 class="font-heading font-semibold text-white text-lg leading-snug truncate">${escapeHtml(project.title)}</h3>
+                                    <p class="text-xs text-zinc-400 truncate mt-0.5">${escapeHtml(project.url)}</p>
+                                </div>
+                            </div>
+
+                            <!-- Botão Deletar -->
+                            <button onclick="confirmDelete('${project.id}', '${escapeHtml(project.title)}')" title="Excluir trabalho" class="text-zinc-500 hover:text-red-400 p-2 rounded-xl hover:bg-white/5 transition opacity-80 sm:opacity-0 group-hover:opacity-100">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+
+                        ${categoryBadge ? `<div class="mb-4">${categoryBadge}</div>` : '<div class="mb-2"></div>'}
+                    </div>
+
+                    <!-- Ações de Rodapé do Card -->
+                    <div class="pt-4 border-t border-white/10 flex items-center gap-2.5">
+                        <a href="${project.url}" target="_blank" rel="noopener noreferrer" 
+                           class="flex-1 bg-white/10 hover:bg-white/20 text-white font-medium py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-2 transition border border-white/15">
+                            <span>Abrir Trabalho</span>
+                            <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+                        </a>
+
+                        <button onclick="copyUrl('${project.url}')" title="Copiar Link"
+                                class="bg-white/5 hover:bg-white/15 text-zinc-300 hover:text-white border border-white/15 py-2.5 px-3.5 rounded-xl text-xs flex items-center justify-center gap-2 transition">
+                            <i data-lucide="copy" class="w-4 h-4"></i>
+                            <span class="hidden sm:inline">Copiar</span>
+                        </button>
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+
+            // Inicializar Lucide Icons em novos elementos renderizados
+            lucide.createIcons();
+        }
+
+        // Filtrar em tempo real
+        function filterProjects() {
+            const query = document.getElementById('searchInput').value;
+            renderProjects(query);
+        }
+
+        // Copiar Link com Feedback Toast
+        function copyUrl(url) {
+            const temp = document.createElement('input');
+            temp.value = url;
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand('copy');
+            document.body.removeChild(temp);
+
+            showToast("Link copiado para a área de transferência!");
+        }
+
+        // Mostrar Notificação Toast
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            toastMsg.innerText = message;
+
+            toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-3');
+            toast.classList.add('opacity-100', 'translate-y-0');
+
+            setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-3');
+            }, 3000);
+        }
+
+        // Controle do Modal
+        function openModal() {
+            const modal = document.getElementById('modal');
+            const modalContent = document.getElementById('modalContent');
+            document.getElementById('projectForm').reset();
+
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            modalContent.classList.remove('scale-95');
+            modalContent.classList.add('scale-100');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            const modalContent = document.getElementById('modalContent');
+
+            modalContent.classList.remove('scale-100');
+            modalContent.classList.add('scale-95');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+        }
+
+        // Salvar Novo Trabalho
+        function saveProject(e) {
+            e.preventDefault();
+
+            const title = document.getElementById('projectTitle').value.trim();
+            const url = document.getElementById('projectUrl').value.trim();
+            const category = document.getElementById('projectCategory').value.trim();
+
+            if (!title || !url) return;
+
+            const projects = getProjects();
+            const newProject = {
+                id: Date.now().toString(),
+                title: title,
+                url: url,
+                category: category || null
+            };
+
+            projects.unshift(newProject);
+            setProjects(projects);
+
+            renderProjects(document.getElementById('searchInput').value);
+            closeModal();
+            showToast("Trabalho salvo com sucesso!");
+        }
+
+        // Deletar com Confirmação
+        function confirmDelete(id, title) {
+            if (window.confirm(`Tem certeza que deseja remover "${title}"?`)) {
+                let projects = getProjects();
+                projects = projects.filter(p => p.id !== id);
+                setProjects(projects);
+                renderProjects(document.getElementById('searchInput').value);
+                showToast("Trabalho removido!");
+            }
+        }
+
+        // Restaurar Links Originais Padrão
+        function restoreDefaults() {
+            if (window.confirm("Deseja restaurar a lista com os trabalhos iniciais (Marte e Urano)?")) {
+                localStorage.setItem('hub_trabalhos_links', JSON.stringify(defaultProjects));
+                document.getElementById('searchInput').value = '';
+                renderProjects();
+                showToast("Lista inicial restaurada!");
+            }
+        }
+
+        // Tratamento para evitar XSS
+        function escapeHtml(str) {
+            return str
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // Inicialização na carga da página
+        window.onload = function() {
+            renderProjects();
+            lucide.createIcons();
+        };
+    </script>
+</body>
+</html>
